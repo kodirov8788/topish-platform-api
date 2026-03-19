@@ -10,7 +10,6 @@ const BaseAuthController = require("./BaseAuthController");
 const Users = require("../../models/user_model");
 const { generateTokens, createTokenUser } = require("../../utils/jwt");
 const { handleResponse } = require("../../utils/handleResponse");
-const jwt = require("jsonwebtoken");
 const { getEskizAuthToken, sendCustomSms } = require("../../utils/smsService");
 const { sendOtpMessage } = require("../../utils/engagelab_smsService");
 

@@ -62,7 +62,7 @@ const SecuritySchemes = {
 
 // const URL = `http://localhost:5001/api/v1/`;
 
-const URL = process.env.SWAGGERT_URL;
+const URL = process.env.SWAGGERT_URL || "http://127.0.0.1:8080/api/v1";
 
 const swaggerOptions = {
   definition: {
@@ -157,4 +157,7 @@ const setupSwagger = (app) => {
   // console.log('Swagger is setup and running');
 };
 
+const getSwaggerSpecs = () => swaggerSpecs;
+
 module.exports = setupSwagger;
+module.exports.getSwaggerSpecs = getSwaggerSpecs;

@@ -1,6 +1,6 @@
 // src/controllers/AuthCTRL.js
 const Users = require("../models/user_model");
-const { generateTokens, createTokenUser } = require("../utils/jwt");
+const { generateTokens, createTokenUser, isTokenValid } = require("../utils/jwt");
 const { handleResponse } = require("../utils/handleResponse");
 const { deleteUserAvatar } = require("./avatarCTRL");
 const { deleteUserCv } = require("./resumeCTRL/CvCTRL");
@@ -12,7 +12,6 @@ const {
   checkSmsStatus,
   makeVoiceCall,
 } = require("../utils/smsService");
-const jwt = require("jsonwebtoken");
 const { sendOtpMessage } = require("../utils/engagelab_smsService");
 const { PromptCode } = require("../models/other_models");
 const PendingUsers = require("../models/pending_register_model");
@@ -952,25 +951,9 @@ class AuthCTRL {
         );
       }
 
-      // Using promisify to convert the callback-based jwt.verify to a promise
-      const verifyToken = (token, secret) => {
-        return new Promise((resolve, reject) => {
-          jwt.verify(token, secret, (err, decoded) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(decoded);
-            }
-          });
-        });
-      };
-
       try {
         // Verify the token
-        const decoded = await verifyToken(
-          refreshToken,
-          process.env.JWT_REFRESH_SECRET
-        );
+        isTokenValid(refreshToken, process.env.JWT_REFRESH_SECRET);
 
         // Find the user with the exactly matching refresh token
         // Updated to match the new schema (string, not array)

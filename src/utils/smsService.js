@@ -1,7 +1,6 @@
 // src/utils/smsService.js
 const axios = require("axios");
 const FormData = require("form-data"); // Make sure to install this package
-const twilio = require('twilio');
 
 async function getEskizAuthToken() {
   let data = new FormData();
@@ -117,13 +116,17 @@ async function checkSmsStatus(token, dispatchId, isGlobal = '0') {
   }
 }
 
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const client = twilio(accountSid, authToken);
+const getTwilioClient = () => {
+  const twilio = require("twilio");
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  return twilio(accountSid, authToken);
+};
 
 
 async function sendGlobalSms(phoneNumber, message) {
   try {
+    const client = getTwilioClient();
     const response = await client.messages.create({
       body: message,
       from: process.env.TWILIO_PHONE_NUMBER,
@@ -137,8 +140,9 @@ async function sendGlobalSms(phoneNumber, message) {
   }
 }
 
-async function checkSmsStatus(messageSid) {
+async function checkTwilioMessageStatus(messageSid) {
   try {
+    const client = getTwilioClient();
     const message = await client.messages(messageSid).fetch();
     return message.status;
   } catch (error) {
@@ -149,6 +153,7 @@ async function checkSmsStatus(messageSid) {
 
 async function makeVoiceCall(phoneNumber, message) {
   try {
+    const client = getTwilioClient();
     const response = await client.calls.create({
       twiml: `<Response><Say rate="${0.5}" loop="2" >${message}</Say></Response>`,
       to: phoneNumber,
@@ -161,4 +166,11 @@ async function makeVoiceCall(phoneNumber, message) {
     throw new Error(`Failed to make voice call: ${error.message}`);
   }
 }
-module.exports = { getEskizAuthToken, sendCustomSms, sendGlobalSms, checkSmsStatus, makeVoiceCall, checkSmsStatus };
+module.exports = {
+  getEskizAuthToken,
+  sendCustomSms,
+  sendGlobalSms,
+  checkSmsStatus,
+  checkTwilioMessageStatus,
+  makeVoiceCall,
+};

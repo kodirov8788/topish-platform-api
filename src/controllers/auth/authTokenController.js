@@ -8,9 +8,12 @@
 
 const BaseAuthController = require("./BaseAuthController");
 const Users = require("../../models/user_model");
-const { generateTokens, createTokenUser } = require("../../utils/jwt");
+const {
+  generateTokens,
+  createTokenUser,
+  isTokenValid,
+} = require("../../utils/jwt");
 const { handleResponse } = require("../../utils/handleResponse");
-const jwt = require("jsonwebtoken");
 
 class AuthTokenController extends BaseAuthController {
   /**
@@ -40,25 +43,9 @@ class AuthTokenController extends BaseAuthController {
         );
       }
 
-      // Promisify jwt.verify
-      const verifyToken = (token, secret) => {
-        return new Promise((resolve, reject) => {
-          jwt.verify(token, secret, (err, decoded) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(decoded);
-            }
-          });
-        });
-      };
-
       try {
         // Verify the token
-        const decoded = await verifyToken(
-          refreshToken,
-          process.env.JWT_REFRESH_SECRET
-        );
+        isTokenValid(refreshToken, process.env.JWT_REFRESH_SECRET);
 
         // Find the user with the matching refresh token
         const query = { refreshTokens: refreshToken };
