@@ -568,6 +568,39 @@ class StatisticsCTRL {
       );
     }
   }
+  async getSystemHealth(req, res) {
+    try {
+      const os = require('os');
+      const stats = {
+        uptime: process.uptime(),
+        memory: {
+          free: os.freemem(),
+          total: os.totalmem(),
+          usagePercentage: ((os.totalmem() - os.freemem()) / os.totalmem() * 100).toFixed(2),
+        },
+        loadAverage: os.loadavg(),
+        platform: os.platform(),
+        timestamp: new Date(),
+      };
+
+      return handleResponse(
+        res,
+        200,
+        "success",
+        "System health information retrieved successfully",
+        stats
+      );
+    } catch (error) {
+      return handleResponse(
+        res,
+        500,
+        "error",
+        "Something went wrong: " + error.message,
+        null,
+        0
+      );
+    }
+  }
 }
 
 module.exports = new StatisticsCTRL();

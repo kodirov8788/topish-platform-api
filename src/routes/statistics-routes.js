@@ -4,7 +4,9 @@ const {
   getEmployerCount,
   getJobsCount,
   getApplicantsCount,
-  getCompaniesCount
+  getApplicantsCount,
+  getCompaniesCount,
+  getSystemHealth
 } = require("../controllers/statisticsCTRL");
 const router = require("express").Router();
 
@@ -13,5 +15,6 @@ router.route("/employers").get(getEmployerCount);
 router.route("/jobs").get(getJobsCount);
 router.route("/applicants").get(getApplicantsCount);
 router.route("/companies").get(getCompaniesCount);
+router.route("/health").get(getSystemHealth);
 
 module.exports = router;
