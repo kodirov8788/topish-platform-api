@@ -94,7 +94,7 @@ Current smoke tests verify:
 This repo is strongest as a platform-backend case study, not as a lightweight starter. The main engineering signal is handling a wide API surface with consistent routing, auth boundaries, and external-service integration points.
 
 ## Next Technical Improvements
-- add request validation coverage to the most important routes
-- split duplicate and legacy route/controller files out of the main code path
-- add database-backed integration tests for auth and jobs flows
-- separate infrastructure-heavy integrations behind clearer service boundaries
+- [x] add request validation coverage to the most important routes (Auth routes integrated)
+- [x] split duplicate and legacy route/controller files out of the main code path (Removed copy files)
+- [ ] add database-backed integration tests for auth and jobs flows
+- [ ] separate infrastructure-heavy integrations behind clearer service boundaries

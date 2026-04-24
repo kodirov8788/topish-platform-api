@@ -17,6 +17,7 @@ const authTokenController = require("../controllers/auth/authTokenController");
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth-middleware");
+const { validateUserSignUp, validateUserSignIn, userValidation } = require("../middleware/user-validation");
 
 // Token management routes
 router.get(
@@ -42,7 +43,7 @@ router.post(
 );
 
 // Registration routes
-router.post("/create-user", authRegistrationController.sendRegisterCode);
+router.post("/create-user", validateUserSignUp, userValidation, authRegistrationController.sendRegisterCode);
 router.post(
   "/registerbyadmin",
   authMiddleware,
@@ -64,7 +65,7 @@ router.post(
 router.post("/sendVoiceCall", authRegistrationController.sendVoiceCall);
 
 // Login routes
-router.post("/sign-in", authLoginController.sendLoginCode);
+router.post("/sign-in", validateUserSignIn, userValidation, authLoginController.sendLoginCode);
 router.post("/sign-in/confirm", authLoginController.confirmLogin);
 router.post("/sign-out", authMiddleware, authLoginController.signOut);
 
